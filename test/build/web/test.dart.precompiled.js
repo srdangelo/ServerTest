@@ -6293,12 +6293,18 @@ var $$ = {};
     "%": "WebGLRenderingContext;CanvasRenderingContext"
   },
   CanvasRenderingContext2D: {
-    "^": "CanvasRenderingContext;fillStyle}",
+    "^": "CanvasRenderingContext;fillStyle},font},textAlign},textBaseline}",
     clearRect$4: function(receiver, x, y, width, height) {
       return receiver.clearRect(x, y, width, height);
     },
     fillRect$4: function(receiver, x, y, width, height) {
       return receiver.fillRect(x, y, width, height);
+    },
+    fillText$4: function(receiver, text, x, y, maxWidth) {
+      receiver.fillText(text, x, y);
+    },
+    fillText$3: function($receiver, text, x, y) {
+      return this.fillText$4($receiver, text, x, y, null);
     },
     "%": "CanvasRenderingContext2D"
   },
@@ -7421,7 +7427,7 @@ var $$ = {};
     }
   },
   Game: {
-    "^": "Object;canvas,ctx,width,height,myState,tmanager,tlayer",
+    "^": "Object;canvas,ctx,width,height,myState,tmanager,tlayer,score",
     animate$0: function(_) {
       var t1 = $.ws;
       t1.toString;
@@ -7432,6 +7438,12 @@ var $$ = {};
     draw$0: function() {
       var t1, box, t2;
       J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
+      J.set$fillStyle$x(this.ctx, "white");
+      J.set$font$x(this.ctx, "30px sans-serif");
+      J.set$textAlign$x(this.ctx, "left");
+      J.set$textBaseline$x(this.ctx, "center");
+      J.fillText$3$x(this.ctx, "Server/Client Attempt: ", 100, 50);
+      J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
       for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
         box = t1._current;
         t2 = J.getInterceptor$x(box);
@@ -7440,27 +7452,29 @@ var $$ = {};
       }
     },
     handleMsg$1: function(data) {
-      var t1, objectsData, t2, t3, t4, t5;
+      var t1, objectsData, t2, data0, t3, t4, t5, t6;
       t1 = J.getInterceptor$asx(data);
       if (J.$eq(t1.$index(data, 0), "u")) {
         objectsData = t1.substring$1(data, 2).split(";");
-        for (t1 = new H.ListIterator(objectsData, objectsData.length, 0, null); t1.moveNext$0();) {
-          data = J.split$1$s(t1._current, ",");
-          if (data.length > 3) {
-            t2 = this.myState;
-            t3 = P.num_parse(data[0], null);
-            if (1 >= data.length)
-              return H.ioore(data, 1);
-            t4 = P.num_parse(data[1], null);
-            if (2 >= data.length)
-              return H.ioore(data, 2);
-            t5 = P.num_parse(data[2], null);
-            if (3 >= data.length)
-              return H.ioore(data, 3);
-            t2.updateBox$4(t3, t4, t5, data[3]);
+        for (t2 = new H.ListIterator(objectsData, objectsData.length, 0, null); t2.moveNext$0();) {
+          data0 = J.split$1$s(t2._current, ",");
+          if (data0.length > 3) {
+            t3 = this.myState;
+            t4 = P.num_parse(data0[0], null);
+            if (1 >= data0.length)
+              return H.ioore(data0, 1);
+            t5 = P.num_parse(data0[1], null);
+            if (2 >= data0.length)
+              return H.ioore(data0, 2);
+            t6 = P.num_parse(data0[2], null);
+            if (3 >= data0.length)
+              return H.ioore(data0, 3);
+            t3.updateBox$4(t4, t5, t6, data0[3]);
           }
         }
       }
+      if (J.$eq(t1.$index(data, 0), "s"))
+        this.score = t1.substring$1(data, 2);
     },
     Game$0: function() {
       var t1, t2;
@@ -7484,7 +7498,7 @@ var $$ = {};
         t2 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
         t3 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
         t3.enabled = true;
-        t3 = new X.Game(null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3);
+        t3 = new X.Game(null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null);
         t3.Game$0();
         return t3;
       }}
@@ -7898,6 +7912,9 @@ J.endsWith$1$s = function(receiver, a0) {
 J.fillRect$4$x = function(receiver, a0, a1, a2, a3) {
   return J.getInterceptor$x(receiver).fillRect$4(receiver, a0, a1, a2, a3);
 };
+J.fillText$3$x = function(receiver, a0, a1, a2) {
+  return J.getInterceptor$x(receiver).fillText$3(receiver, a0, a1, a2);
+};
 J.forEach$1$ax = function(receiver, a0) {
   return J.getInterceptor$ax(receiver).forEach$1(receiver, a0);
 };
@@ -7948,6 +7965,15 @@ J.send$1$x = function(receiver, a0) {
 };
 J.set$fillStyle$x = function(receiver, value) {
   return J.getInterceptor$x(receiver).set$fillStyle(receiver, value);
+};
+J.set$font$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$font(receiver, value);
+};
+J.set$textAlign$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$textAlign(receiver, value);
+};
+J.set$textBaseline$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$textBaseline(receiver, value);
 };
 J.split$1$s = function(receiver, a0) {
   return J.getInterceptor$s(receiver).split$1(receiver, a0);
@@ -8805,6 +8831,15 @@ function dart_precompiled($collectedClasses) {
   CanvasRenderingContext2D.prototype = $desc;
   CanvasRenderingContext2D.prototype.set$fillStyle = function(receiver, v) {
     return receiver.fillStyle = v;
+  };
+  CanvasRenderingContext2D.prototype.set$font = function(receiver, v) {
+    return receiver.font = v;
+  };
+  CanvasRenderingContext2D.prototype.set$textAlign = function(receiver, v) {
+    return receiver.textAlign = v;
+  };
+  CanvasRenderingContext2D.prototype.set$textBaseline = function(receiver, v) {
+    return receiver.textBaseline = v;
   };
   function CharacterData() {
   }
@@ -13726,7 +13761,7 @@ function dart_precompiled($collectedClasses) {
   if ($desc instanceof Array)
     $desc = $desc[1];
   State.prototype = $desc;
-  function Game(canvas, ctx, width, height, myState, tmanager, tlayer) {
+  function Game(canvas, ctx, width, height, myState, tmanager, tlayer, score) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.width = width;
@@ -13734,6 +13769,7 @@ function dart_precompiled($collectedClasses) {
     this.myState = myState;
     this.tmanager = tmanager;
     this.tlayer = tlayer;
+    this.score = score;
   }
   Game.builtin$cls = "Game";
   if (!"name" in Game)

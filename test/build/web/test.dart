@@ -258,11 +258,14 @@ class Game {
   TouchManager tmanager = new TouchManager();
   TouchLayer tlayer = new TouchLayer();
   
+  var score;
+  
   Game() {
     canvas = querySelector("#game");
     ctx = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
+    
     
     tmanager.registerEvents(document.documentElement);
     tmanager.addTouchLayer(tlayer);
@@ -292,6 +295,12 @@ class Game {
  */
   void draw() {
     ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = 'white';
+    ctx.font = '30px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'center';
+    ctx.fillText("Server/Client Attempt: ", 100, 50);
+    ctx.fillText("Score: ${score}", 100, 100);
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
       ctx.fillRect(box.x, box.y, 50, 50);
@@ -312,6 +321,9 @@ class Game {
           myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
         }
       }
+    }
+    if (data[0] == "s"){
+      score = data.substring(2);
     }
   }
 }

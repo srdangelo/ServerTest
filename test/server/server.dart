@@ -213,6 +213,8 @@ class State{
   //List of all objects in the scene that need to be communicated
   List<Box> myBoxes;
   
+  var score = 100;
+  
   State(){
     myBoxes = new List<Box>();
   }
@@ -302,13 +304,17 @@ class State{
         if (side == 'right'){
           box.rightNeighbor = myBoxes[neighbor - 1];
           box.snap();
+          score += 10;
         }
         if (side == 'left'){
           box.leftNeighbor = myBoxes[neighbor - 1];
           box.snap();
+          score += 10;
         }
       }
     }
+    var sendScore = "s: ${score}";
+    distributeMessage(sendScore);
   }
   
   
