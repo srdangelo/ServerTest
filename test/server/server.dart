@@ -99,6 +99,9 @@ class Box{
   num id;
   bool dragged;
   
+  num gl_newX = random.nextInt(400);
+  num gl_newY = random.nextInt(400);
+  
   Box rightNeighbor = null;
   Box leftNeighbor = null;
   
@@ -123,23 +126,24 @@ class Box{
   
   void rightMove (num dx, num dy) {
     num width = 50;
-    num newX = dx + width;
+    num newX = dx + 50;
     num newY = dy;
     x = newX;
     y = newY;
     if (rightNeighbor != null){
-      rightNeighbor.rightMove(newX, newY);
+      rightNeighbor.rightMove(dx, dy);
     }
   }
   
   void leftMove (num dx, num dy) {
-      num width = 50;
-      num newX = dx + width;
+      //num width = 50;
+      num newX = dx - 50;
       num newY = dy;
       x = newX;
-      y = newY;
+      y = newX;
+      print (newX);
       if (leftNeighbor != null){
-        leftNeighbor.leftMove(newX, newY);
+        leftNeighbor.leftMove(dx, dy);
       }
     }
   
@@ -178,24 +182,22 @@ class Box{
         }
   }
   
-  void moveAround(num x, num y){
-    num newX = random.nextInt(500);
-    num newY = random.nextInt(500);
-        var dist = sqrt(pow((newX - x), 2) + pow((newY - y), 2)); 
-        num head = atan2((newY - y), (newX - x));
+  void moveAround(){
+        var dist = sqrt(pow((gl_newX - this.x), 2) + pow((gl_newY - this.y), 2)); 
+        num head = atan2((gl_newY - this.y), (gl_newX - this.x));
 
         if(dist >= 1){
-          num targetX = cos(head);
-          num targetY = sin(head); 
+          num targetX = cos(head) + this.x;
+          num targetY = sin(head) + this.y; 
           move(targetX, targetY);
           }
         else{
-          num targetX = cos(head) * dist;
-          num targetY = sin(head) * dist; 
+          num targetX = (cos(head) * dist) + this.x;
+          num targetY = (sin(head) * dist) + this.y; 
           move(targetX, targetY);
                     
-          newX = random.nextInt(500);
-          newY = random.nextInt(500);
+          gl_newX = random.nextInt(400);
+          gl_newY = random.nextInt(400);
           //change to game width and hieght
         } 
 
@@ -231,9 +233,10 @@ class State{
       if(!box.dragged){
         
         //random movement
-        box.x = box.x + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
-        box.y = box.y + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
-        //box.moveAround(box.x, box.y);
+        //box.x = box.x + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
+        //box.y = box.y + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
+        box.moveAround();
+
         
         //keep movement within the bounds 600x400 hardcoded for now
         if(box.x < 0){

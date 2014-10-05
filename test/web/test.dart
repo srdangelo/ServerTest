@@ -295,6 +295,7 @@ class Game {
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
       ctx.fillRect(box.x, box.y, 50, 50);
+      
     }
     ctx.fillStyle = "yellow";
     ctx.fillRect(0, 0, 50, 50);
