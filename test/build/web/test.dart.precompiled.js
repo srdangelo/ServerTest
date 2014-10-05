@@ -7430,16 +7430,14 @@ var $$ = {};
       this.draw$0();
     },
     draw$0: function() {
-      var t1, t2, t3, box;
+      var t1, box, t2;
       J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
-      for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t2 = t1.moveNext$0(), t3 = this.ctx, t2;) {
+      for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
         box = t1._current;
         t2 = J.getInterceptor$x(box);
-        J.set$fillStyle$x(t3, t2.get$color(box));
+        J.set$fillStyle$x(this.ctx, t2.get$color(box));
         J.fillRect$4$x(this.ctx, t2.get$x(box), box.y, 50, 50);
       }
-      J.set$fillStyle$x(t3, "yellow");
-      J.fillRect$4$x(this.ctx, 0, 0, 50, 50);
     },
     handleMsg$1: function(data) {
       var t1, objectsData, t2, t3, t4, t5;

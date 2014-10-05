@@ -131,7 +131,7 @@ class Box{
     x = newX;
     y = newY;
     if (rightNeighbor != null){
-      rightNeighbor.rightMove(dx, dy);
+      rightNeighbor.rightMove(newX, newY);
     }
   }
   
@@ -140,10 +140,9 @@ class Box{
       num newX = dx - 50;
       num newY = dy;
       x = newX;
-      y = newX;
-      print (newX);
+      y = newY;
       if (leftNeighbor != null){
-        leftNeighbor.leftMove(dx, dy);
+        leftNeighbor.leftMove(newX, newY);
       }
     }
   
@@ -235,7 +234,9 @@ class State{
         //random movement
         //box.x = box.x + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
         //box.y = box.y + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
-        box.moveAround();
+
+        box.moveAround(); 
+        
 
         
         //keep movement within the bounds 600x400 hardcoded for now
@@ -370,6 +371,10 @@ void main() {
   myState.addBox(box2);
   Box box3 = new Box(3, random.nextInt(600), random.nextInt(400), 'blue');
   myState.addBox(box3);
+  Box box4 = new Box(4, random.nextInt(600), random.nextInt(400), 'yellow');
+  myState.addBox(box4);
+  Box box5 = new Box(5, random.nextInt(600), random.nextInt(400), 'purple');
+  myState.addBox(box5);
   
   
   //setup times to update the state and send out messages to clients out with state information
