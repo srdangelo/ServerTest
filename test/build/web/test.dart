@@ -147,13 +147,13 @@ class Box implements Touchable{
                     rightBuddy.leftNeighbor = this;
                     this.rightNeighbor = rightBuddy;
                     print ('neighbors!');
-                    ws.send("n:${id},${rightNeighbor.id}");
+                    ws.send("n:${id},right,${rightNeighbor.id}");
                  }
               if (leftBuddy.x + 10 >= this.x && leftBuddy.y + 10 >= this.y && leftBuddy.x + 10 <= this.x + 20 && leftBuddy.y + 10 <= this.y + 20){
                     leftBuddy.rightNeighbor = this;
                     this.leftNeighbor = leftBuddy;
                     print ('neighbors!');
-                    ws.send("n:${id},${leftNeighbor.id}");
+                    ws.send("n:${id},left,${leftNeighbor.id}");
                  }
           }
       if (rightBuddy != null && leftBuddy == null){
@@ -161,7 +161,7 @@ class Box implements Touchable{
                 this.rightNeighbor = rightBuddy;
                 rightBuddy.leftNeighbor = this;
                 print ('neighbors!');
-                ws.send("n:${id},${rightNeighbor.id}");
+                ws.send("n:${id},right,${rightNeighbor.id}");
              }
           }
       if (leftBuddy != null && rightBuddy == null){
@@ -169,7 +169,7 @@ class Box implements Touchable{
                     this.leftNeighbor = leftBuddy;
                     leftBuddy.rightNeighbor = this;
                     print ('neighbors!');
-                    ws.send("n:${id},${leftNeighbor.id}");
+                    ws.send("n:${id},left,${leftNeighbor.id}");
                  }
               }
       }
@@ -208,6 +208,17 @@ class State{
         box.y = y;
         box.color = color;
         found = true;
+          int i = myBoxes.indexOf(box);
+                if (i == 0){
+                  box.rightBuddy = myBoxes[i + 1];
+                }
+                if (i == myBoxes.length - 1){
+                  box.leftBuddy = myBoxes[i - 1];
+                }
+                if (i != 0 && i != myBoxes.length - 1) {
+                  box.leftBuddy = myBoxes[i - 1];
+                  box.rightBuddy = myBoxes[i + 1];
+                }
       }
     }
     
@@ -256,20 +267,6 @@ class Game {
     tmanager.registerEvents(document.documentElement);
     tmanager.addTouchLayer(tlayer);
     myState = new State(tlayer);
-    
-    for (Box box in myState.myBoxes){
-      int x = myState.myBoxes.indexOf(box);
-            if (x == 0){
-              box.rightBuddy = myState.myBoxes[x + 1];
-            }
-            if (x == myState.myBoxes.length - 1){
-              box.leftBuddy = myState.myBoxes[x - 1];
-            }
-            if (x != 0 && x != myState.myBoxes.length - 1) {
-              box.leftBuddy = myState.myBoxes[x - 1];
-              box.rightBuddy = myState.myBoxes[x + 1];
-            }
-    }
        
     
     // redraw the canvas every 40 milliseconds runs animate function every 40 milliseconds 

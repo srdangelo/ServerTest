@@ -32,6 +32,9 @@ class myClient {
     }
     if (msg[0] == "n"){
       print(msg);
+      String tempMsg = msg.substring(2);
+      List<String> data = tempMsg.split(",");
+      myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
     }
     else if(msg[0] == "b"){
       myState.noDrag(num.parse(msg.substring(2)));
@@ -104,6 +107,8 @@ class Box{
     
   }
   
+
+  
   void move(num dx, num dy) {
     x = dx;
     y = dy;
@@ -117,20 +122,61 @@ class Box{
   }
   
   void rightMove (num dx, num dy) {
-    x += dx;
-    y += dy;
+    num width = 50;
+    num newX = dx + width;
+    num newY = dy;
+    x = newX;
+    y = newY;
     if (rightNeighbor != null){
-      rightNeighbor.rightMove(dx, dy);
+      rightNeighbor.rightMove(newX, newY);
     }
   }
   
   void leftMove (num dx, num dy) {
-      x += dx;
-      y += dy;
+      num width = 50;
+      num newX = dx + width;
+      num newY = dy;
+      x = newX;
+      y = newY;
       if (leftNeighbor != null){
-        leftNeighbor.leftMove(dx, dy);
+        leftNeighbor.leftMove(newX, newY);
       }
     }
+  
+  void snap (){
+    num width = 50;
+    num leftX = x - width;
+    num rightX = x + width;
+    
+    if (leftNeighbor != null){
+      leftNeighbor.x = leftX;
+      leftNeighbor.y = y;
+      leftNeighbor.snapLeft();
+    }
+    if (rightNeighbor != null){
+      rightNeighbor.x = rightX;
+      rightNeighbor.y = y;
+      rightNeighbor.snapRight();
+    }
+  }
+  
+  void snapLeft(){
+    num width = 50;
+    num leftX = rightNeighbor.leftNeighbor.x - width;
+    if (leftNeighbor != null){
+          leftNeighbor.x = leftX;
+          leftNeighbor.y = y; 
+        }
+  }
+  
+  void snapRight(){
+    num width = 50;
+    num rightX = leftNeighbor.rightNeighbor.x + width;
+    if (rightNeighbor != null){
+          rightNeighbor.x = rightX;
+          rightNeighbor.y = y;
+        }
+  }
   
   void moveAround(num x, num y){
     num newX = random.nextInt(500);
@@ -185,8 +231,8 @@ class State{
       if(!box.dragged){
         
         //random movement
-        //box.x = box.x + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
-        //box.y = box.y + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
+        box.x = box.x + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
+        box.y = box.y + random.nextInt(15) * (1 - 2*random.nextDouble()).round();
         //box.moveAround(box.x, box.y);
         
         //keep movement within the bounds 600x400 hardcoded for now
@@ -246,6 +292,21 @@ class State{
     }
   }
   
+  assignNeighbor (num id, String side, num neighbor){
+    for(Box box in myBoxes){
+      if(id == box.id){
+        if (side == 'right'){
+          box.rightNeighbor = myBoxes[neighbor - 1];
+          box.snap();
+        }
+        if (side == 'left'){
+          box.leftNeighbor = myBoxes[neighbor - 1];
+          box.snap();
+        }
+      }
+    }
+  }
+  
   
   
 }
@@ -267,7 +328,7 @@ State myState;
 void main() {
   
   //server pathing
-  var pathToBuild = "/Users/sarahdangelo/Desktop/test/test/build/web/";
+  var pathToBuild = "/Users/sarahdangelo/Documents/ServerTest/test/build/web/";
 
   var staticFiles = new VirtualDirectory(pathToBuild);
   staticFiles.allowDirectoryListing = true;

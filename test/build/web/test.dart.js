@@ -7274,7 +7274,7 @@ var $$ = {};
     }
   },
   Box: {
-    "^": "Object;x*,y,color>,id>,dragged,rightBuddy?,leftBuddy?,leftNeighbor,rightNeighbor,dragTimer",
+    "^": "Object;x*,y,color>,id>,dragged,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
     containsTouch$1: function(e) {
       var t1, t2;
       t1 = e.touchX;
@@ -7315,14 +7315,14 @@ var $$ = {};
           t1.leftNeighbor = this;
           this.rightNeighbor = t1;
           P.print("neighbors!");
-          $.ws.send("n:" + H.S(this.id) + "," + H.S(this.rightNeighbor.id));
+          $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
         if (J.$ge$n(J.$add$ns(this.leftBuddy.x, 10), this.x) && J.$ge$n(J.$add$ns(this.leftBuddy.y, 10), this.y) && J.$le$n(J.$add$ns(this.leftBuddy.x, 10), J.$add$ns(this.x, 20)) && J.$le$n(J.$add$ns(this.leftBuddy.y, 10), J.$add$ns(this.y, 20))) {
           t1 = this.leftBuddy;
           t1.rightNeighbor = this;
           this.leftNeighbor = t1;
           P.print("neighbors!");
-          $.ws.send("n:" + H.S(this.id) + "," + H.S(this.leftNeighbor.id));
+          $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
       }
       t1 = this.rightBuddy;
@@ -7332,7 +7332,7 @@ var $$ = {};
           this.rightNeighbor = t1;
           t1.leftNeighbor = this;
           P.print("neighbors!");
-          $.ws.send("n:" + H.S(this.id) + "," + H.S(this.rightNeighbor.id));
+          $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
       t1 = this.leftBuddy;
       if (t1 != null && this.rightBuddy == null)
@@ -7341,7 +7341,7 @@ var $$ = {};
           this.leftNeighbor = t1;
           t1.rightNeighbor = this;
           P.print("neighbors!");
-          $.ws.send("n:" + H.S(this.id) + "," + H.S(this.leftNeighbor.id));
+          $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
       $.ws.send("b:" + H.S(this.id));
     },
@@ -7374,7 +7374,7 @@ var $$ = {};
   State: {
     "^": "Object;myBoxes,tlayer",
     updateBox$4: function(id, x, y, color) {
-      var t1, t2, found, box, t3, temp;
+      var t1, t2, found, box, t3, i, t4, t5, t6, temp;
       for (t1 = this.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null), t2 = J.getInterceptor(id), found = false; t1.moveNext$0();) {
         box = t1._current;
         t3 = J.getInterceptor$x(box);
@@ -7382,6 +7382,34 @@ var $$ = {};
           t3.set$x(box, x);
           box.y = y;
           box.color = color;
+          t3 = this.myBoxes;
+          i = H.Lists_indexOf(t3, box, 0, t3.length);
+          t3 = i === 0;
+          if (t3) {
+            t4 = this.myBoxes;
+            t5 = i + 1;
+            if (t5 < 0 || t5 >= t4.length)
+              return H.ioore(t4, t5);
+            box.rightBuddy = t4[t5];
+          }
+          t4 = this.myBoxes;
+          t5 = t4.length;
+          if (i === t5 - 1) {
+            t6 = i - 1;
+            if (t6 < 0 || t6 >= t5)
+              return H.ioore(t4, t6);
+            box.leftBuddy = t4[t6];
+          }
+          if (!t3 && i !== t5 - 1) {
+            t3 = i - 1;
+            if (t3 < 0 || t3 >= t5)
+              return H.ioore(t4, t3);
+            box.leftBuddy = t4[t3];
+            t3 = i + 1;
+            if (t3 < 0 || t3 >= t5)
+              return H.ioore(t4, t3);
+            box.rightBuddy = t4[t3];
+          }
           found = true;
         }
       }
@@ -7437,7 +7465,7 @@ var $$ = {};
       }
     },
     Game$0: function() {
-      var t1, t2, box, x, t3, t4, t5;
+      var t1, t2;
       t1 = document.querySelector("#game");
       this.canvas = t1;
       this.ctx = J.getContext$1$x(t1, "2d");
@@ -7448,42 +7476,8 @@ var $$ = {};
       t2 = this.tlayer;
       t1.layers.push(t2);
       t2 = new X.State(null, t2);
-      t1 = H.setRuntimeTypeInfo([], [X.Box]);
-      t2.myBoxes = t1;
+      t2.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
       this.myState = t2;
-      for (t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
-        box = t1._current;
-        t2 = this.myState.myBoxes;
-        x = H.Lists_indexOf(t2, box, 0, t2.length);
-        t2 = x === 0;
-        if (t2) {
-          t3 = this.myState.myBoxes;
-          t4 = x + 1;
-          if (t4 < 0 || t4 >= t3.length)
-            return H.ioore(t3, t4);
-          box.set$rightBuddy(t3[t4]);
-        }
-        t3 = this.myState.myBoxes;
-        t4 = t3.length;
-        if (x === t4 - 1) {
-          t5 = x - 1;
-          if (t5 < 0 || t5 >= t4)
-            return H.ioore(t3, t5);
-          box.set$leftBuddy(t3[t5]);
-        }
-        if (!t2 && x !== this.myState.myBoxes.length - 1) {
-          t2 = this.myState.myBoxes;
-          t3 = x - 1;
-          if (t3 < 0 || t3 >= t2.length)
-            return H.ioore(t2, t3);
-          box.set$leftBuddy(t2[t3]);
-          t3 = this.myState.myBoxes;
-          t2 = x + 1;
-          if (t2 < 0 || t2 >= t3.length)
-            return H.ioore(t3, t2);
-          box.rightBuddy = t3[t2];
-        }
-      }
       P.Timer_Timer$periodic(C.Duration_80000, new X.Game_closure(this));
     },
     static: {Game$: function() {
