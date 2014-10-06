@@ -347,13 +347,13 @@ void main() {
     staticFiles.serveFile(new File(indexUri.toFilePath()), request);
   };
   //serve the test.html to port 8080
-  HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 8084).then((server) {
+  HttpServer.bind('192.168.1.156', 8080).then((server) {
     server.listen(staticFiles.serveRequest);
   });
   
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('127.0.0.1', 4040).then((server) {
+    HttpServer.bind('192.168.1.156', 4040).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {
           // Upgrade a HttpRequest to a WebSocket connection.

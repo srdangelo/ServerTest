@@ -7212,7 +7212,7 @@ var $$ = {};
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://127.0.0.1:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://192.168.1.156:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, C.EventStreamProvider_open._eventType, false), [null]);
