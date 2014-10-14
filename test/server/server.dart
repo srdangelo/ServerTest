@@ -78,6 +78,13 @@ void distributeMessage(String msg){
    for (myClient c in clients)c.write(msg);
  }
 
+//void logData(String msg){
+//  final filename = 'data.csv';
+//  var file = new File(filename);
+//  var sink = file.openWrite(mode: FileMode.APPEND);
+//  sink.write(msg);
+//}
+
  void addClient(myClient c){
      clients.add(c);
  }
@@ -267,6 +274,7 @@ class State{
       msg = msg + "${box.id},${box.x},${box.y},${box.color};";
     }
     distributeMessage(msg);
+    //logData(msg);
     
   }
   
@@ -347,13 +355,13 @@ void main() {
     staticFiles.serveFile(new File(indexUri.toFilePath()), request);
   };
   //serve the test.html to port 8080
-  HttpServer.bind('192.168.1.156', 8080).then((server) {
+  HttpServer.bind('127.0.0.1', 8084).then((server) {
     server.listen(staticFiles.serveRequest);
   });
   
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('192.168.1.156', 4040).then((server) {
+    HttpServer.bind('127.0.0.1', 3030).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {
           // Upgrade a HttpRequest to a WebSocket connection.
