@@ -87,7 +87,7 @@ class Box implements Touchable{
   
   //when this object is dragged, send a 'd' message with id, x, y, color
   sendDrag(num newX, num newY){
-    ws.send("d:${id},${newX},${newY},${color}");
+    ws.send("d:${id},${newX},${newY},${color}, Client#${game.clientID}");
   }
   
 
@@ -259,6 +259,7 @@ class Game {
   TouchLayer tlayer = new TouchLayer();
   
   var score;
+  var clientID;
   
   Game() {
     canvas = querySelector("#game");
@@ -299,7 +300,7 @@ class Game {
     ctx.font = '30px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'center';
-    ctx.fillText("Server/Client Attempt: ", 100, 50);
+    ctx.fillText("Server/Client Attempt: Client# ${clientID}", 100, 50);
     ctx.fillText("Score: ${score}", 100, 100);
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
@@ -324,6 +325,9 @@ class Game {
     }
     if (data[0] == "s"){
       score = data.substring(2);
+    }
+    if (data[0] == "i"){
+      clientID = data.substring(2);
     }
   }
 }

@@ -12,6 +12,7 @@ import 'dart:convert';
 * http://stackoverflow.com/questions/25982796/sending-mass-push-message-from-server-to-client-in-dart-lang-using-web-socket-m
 */
 class myClient {
+  num clientID = 1;
   WebSocket _socket;
 
   myClient(WebSocket ws){
@@ -29,6 +30,7 @@ class myClient {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
+      logData(tempMsg);
     }
     if (msg[0] == "n"){
       print(msg);
@@ -78,12 +80,20 @@ void distributeMessage(String msg){
    for (myClient c in clients)c.write(msg);
  }
 
-//void logData(String msg){
-//  final filename = 'data.csv';
-//  var file = new File(filename);
-//  var sink = file.openWrite(mode: FileMode.APPEND);
-//  sink.write(msg);
-//}
+void sendID (){
+  num ID = 1;
+  for (myClient e in clients){
+     e.write("i: ${ID}");
+    ID ++; 
+  }
+}
+
+void logData(String msg){
+  final filename = 'data.csv';
+  var file = new File(filename);
+  var sink = file.openWrite(mode: FileMode.APPEND);
+  sink.write(msg);
+}
 
  void addClient(myClient c){
      clients.add(c);
@@ -274,6 +284,7 @@ class State{
       msg = msg + "${box.id},${box.x},${box.y},${box.color};";
     }
     distributeMessage(msg);
+    sendID();
     //logData(msg);
     
   }
@@ -323,6 +334,7 @@ class State{
     }
     var sendScore = "s: ${score}";
     distributeMessage(sendScore);
+    logData(sendScore);
   }
   
   
