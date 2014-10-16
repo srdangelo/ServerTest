@@ -7280,7 +7280,7 @@ var $$ = {};
     }
   },
   Box: {
-    "^": "Object;x*,y,color>,id>,dragged,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
+    "^": "Object;x*,y,color>,id>,dragged,complete,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
     containsTouch$1: function(e) {
       var t1, t2;
       t1 = e.touchX;
@@ -7321,6 +7321,7 @@ var $$ = {};
           t1.leftNeighbor = this;
           this.rightNeighbor = t1;
           P.print("neighbors!");
+          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
         if (J.$ge$n(J.$add$ns(this.leftBuddy.x, 10), this.x) && J.$ge$n(J.$add$ns(this.leftBuddy.y, 10), this.y) && J.$le$n(J.$add$ns(this.leftBuddy.x, 10), J.$add$ns(this.x, 20)) && J.$le$n(J.$add$ns(this.leftBuddy.y, 10), J.$add$ns(this.y, 20))) {
@@ -7328,6 +7329,7 @@ var $$ = {};
           t1.rightNeighbor = this;
           this.leftNeighbor = t1;
           P.print("neighbors!");
+          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
       }
@@ -7338,6 +7340,7 @@ var $$ = {};
           this.rightNeighbor = t1;
           t1.leftNeighbor = this;
           P.print("neighbors!");
+          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
       t1 = this.leftBuddy;
@@ -7347,6 +7350,7 @@ var $$ = {};
           this.leftNeighbor = t1;
           t1.rightNeighbor = this;
           P.print("neighbors!");
+          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
       $.ws.send("b:" + H.S(this.id));
@@ -7366,7 +7370,7 @@ var $$ = {};
       this.dragged = false;
     },
     static: {Box$: function(id, x, y, color) {
-        var t1 = new X.Box(x, y, color, id, null, null, null, null, null, null);
+        var t1 = new X.Box(x, y, color, id, null, 0, null, null, null, null, null);
         t1.Box$4(id, x, y, color);
         return t1;
       }}
@@ -7427,7 +7431,7 @@ var $$ = {};
     }
   },
   Game: {
-    "^": "Object;canvas,ctx,width,height,myState,tmanager,tlayer,score,clientID",
+    "^": "Object;canvas,ctx,width,height,myState,box,tmanager,tlayer,score,clientID",
     animate$0: function(_) {
       var t1 = $.ws;
       t1.toString;
@@ -7500,7 +7504,7 @@ var $$ = {};
         t2 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
         t3 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
         t3.enabled = true;
-        t3 = new X.Game(null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null);
+        t3 = new X.Game(null, null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null);
         t3.Game$0();
         return t3;
       }}

@@ -71,6 +71,7 @@ class Box implements Touchable{
   var color;
   num id;
   bool dragged;
+  num complete = 0;
   
   Box rightBuddy = null;
   Box leftBuddy = null;
@@ -147,12 +148,14 @@ class Box implements Touchable{
                     rightBuddy.leftNeighbor = this;
                     this.rightNeighbor = rightBuddy;
                     print ('neighbors!');
+                    complete += 1;
                     ws.send("n:${id},right,${rightNeighbor.id}");
                  }
               if (leftBuddy.x + 10 >= this.x && leftBuddy.y + 10 >= this.y && leftBuddy.x + 10 <= this.x + 20 && leftBuddy.y + 10 <= this.y + 20){
                     leftBuddy.rightNeighbor = this;
                     this.leftNeighbor = leftBuddy;
                     print ('neighbors!');
+                    complete += 1;
                     ws.send("n:${id},left,${leftNeighbor.id}");
                  }
           }
@@ -161,6 +164,7 @@ class Box implements Touchable{
                 this.rightNeighbor = rightBuddy;
                 rightBuddy.leftNeighbor = this;
                 print ('neighbors!');
+                complete += 1;
                 ws.send("n:${id},right,${rightNeighbor.id}");
              }
           }
@@ -169,6 +173,7 @@ class Box implements Touchable{
                     this.leftNeighbor = leftBuddy;
                     leftBuddy.rightNeighbor = this;
                     print ('neighbors!');
+                    complete += 1;
                     ws.send("n:${id},left,${leftNeighbor.id}");
                  }
               }
@@ -254,6 +259,7 @@ class Game {
   int width, height;
   
   State myState;
+  Box box;
   
   TouchManager tmanager = new TouchManager();
   TouchLayer tlayer = new TouchLayer();
@@ -302,6 +308,11 @@ class Game {
     ctx.textBaseline = 'center';
     ctx.fillText("Server/Client Attempt: Client# ${clientID}", 100, 50);
     ctx.fillText("Score: ${score}", 100, 100);
+    if (score == 120){
+          ctx.fillText("Complete!!", 100, 150);
+          ws.send("c:${clientID} completed puzzle");
+          box.complete = 0;
+        }
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
       ctx.fillRect(box.x, box.y, 50, 50);

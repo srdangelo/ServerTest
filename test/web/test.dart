@@ -254,6 +254,7 @@ class Game {
   int width, height;
   
   State myState;
+  Box box;
   
   TouchManager tmanager = new TouchManager();
   TouchLayer tlayer = new TouchLayer();
