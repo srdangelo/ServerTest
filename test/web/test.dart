@@ -87,7 +87,7 @@ class Box implements Touchable{
   
   //when this object is dragged, send a 'd' message with id, x, y, color
   sendDrag(num newX, num newY){
-    ws.send("d:${id},${newX},${newY},${color}, Client#${game.clientID}");
+    ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
   }
   
 
@@ -111,7 +111,7 @@ class Box implements Touchable{
   void touchUp(Contact event) {
     dragged = false;
     dragTimer.cancel();
-    ws.send("b:${id}");
+    ws.send("b:${id}, ${color}, ${game.clientID}");
     print("touchup ${id}");
   }
   
@@ -125,7 +125,7 @@ class Box implements Touchable{
     }
     dragged = false;
     pieceLocation();
-    ws.send("b:${id}");
+    ws.send("b:${id}, ${color}, ${game.clientID}");
 //    print("touchup ${id}");
   }
    

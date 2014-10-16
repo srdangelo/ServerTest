@@ -32,6 +32,7 @@ class myClient {
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
       logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
+      print (tempMsg);
     }
     if (msg[0] == "n"){
       print(msg);
@@ -40,7 +41,11 @@ class myClient {
       myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
     }
     else if(msg[0] == "b"){
-      myState.noDrag(num.parse(msg.substring(2)));
+      String tempMsg = msg.substring(2);
+      List<String> data = tempMsg.split(",");
+      myState.noDrag(num.parse(data[0]));
+      String temp = msg.substring(2);
+      logData('Touch Up: ${temp} \n', 'clientData.csv');
     }
     
   }
@@ -335,7 +340,7 @@ class State{
         }
       }
     }
-    var sendScore = "s: ${score}";
+    var sendScore = "s: ${score} \n";
     distributeMessage(sendScore);
     logData(sendScore, 'clientData.csv');
     if (score == 120){

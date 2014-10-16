@@ -7280,7 +7280,7 @@ var $$ = {};
     }
   },
   Box: {
-    "^": "Object;x*,y,color>,id>,dragged,complete,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
+    "^": "Object;x*,y,color>,id>,dragged,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
     containsTouch$1: function(e) {
       var t1, t2;
       t1 = e.touchX;
@@ -7302,7 +7302,7 @@ var $$ = {};
     touchUp$1: function($event) {
       this.dragged = false;
       this.dragTimer.cancel$0();
-      $.ws.send("b:" + H.S(this.id));
+      $.ws.send("b:" + H.S(this.id) + ", " + H.S(this.color) + ", " + H.S($.game.clientID));
       P.print("touchup " + H.S(this.id));
     },
     myTouchUp$1: function($event) {
@@ -7321,7 +7321,6 @@ var $$ = {};
           t1.leftNeighbor = this;
           this.rightNeighbor = t1;
           P.print("neighbors!");
-          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
         if (J.$ge$n(J.$add$ns(this.leftBuddy.x, 10), this.x) && J.$ge$n(J.$add$ns(this.leftBuddy.y, 10), this.y) && J.$le$n(J.$add$ns(this.leftBuddy.x, 10), J.$add$ns(this.x, 20)) && J.$le$n(J.$add$ns(this.leftBuddy.y, 10), J.$add$ns(this.y, 20))) {
@@ -7329,7 +7328,6 @@ var $$ = {};
           t1.rightNeighbor = this;
           this.leftNeighbor = t1;
           P.print("neighbors!");
-          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
       }
@@ -7340,7 +7338,6 @@ var $$ = {};
           this.rightNeighbor = t1;
           t1.leftNeighbor = this;
           P.print("neighbors!");
-          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
         }
       t1 = this.leftBuddy;
@@ -7350,17 +7347,16 @@ var $$ = {};
           this.leftNeighbor = t1;
           t1.rightNeighbor = this;
           P.print("neighbors!");
-          ++this.complete;
           $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
-      $.ws.send("b:" + H.S(this.id));
+      $.ws.send("b:" + H.S(this.id) + ", " + H.S(this.color) + ", " + H.S($.game.clientID));
     },
     touchDrag$1: function(e) {
       var t1, t2;
       if (this.dragged) {
         t1 = e.touchX;
         t2 = e.touchY;
-        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", Client#" + H.S($.game.clientID));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + "," + H.S(this.leftNeighbor.color) + "," + H.S(this.rightNeighbor.color) + ", Client#" + H.S($.game.clientID));
         P.print(e.touchX);
       }
     },
@@ -7370,7 +7366,7 @@ var $$ = {};
       this.dragged = false;
     },
     static: {Box$: function(id, x, y, color) {
-        var t1 = new X.Box(x, y, color, id, null, 0, null, null, null, null, null);
+        var t1 = new X.Box(x, y, color, id, null, null, null, null, null, null);
         t1.Box$4(id, x, y, color);
         return t1;
       }}

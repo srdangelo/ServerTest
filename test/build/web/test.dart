@@ -71,7 +71,6 @@ class Box implements Touchable{
   var color;
   num id;
   bool dragged;
-  num complete = 0;
   
   Box rightBuddy = null;
   Box leftBuddy = null;
@@ -88,7 +87,7 @@ class Box implements Touchable{
   
   //when this object is dragged, send a 'd' message with id, x, y, color
   sendDrag(num newX, num newY){
-    ws.send("d:${id},${newX},${newY},${color}, Client#${game.clientID}");
+    ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
   }
   
 
@@ -112,7 +111,7 @@ class Box implements Touchable{
   void touchUp(Contact event) {
     dragged = false;
     dragTimer.cancel();
-    ws.send("b:${id}");
+    ws.send("b:${id}, ${color}, ${game.clientID}");
     print("touchup ${id}");
   }
   
@@ -126,7 +125,7 @@ class Box implements Touchable{
     }
     dragged = false;
     pieceLocation();
-    ws.send("b:${id}");
+    ws.send("b:${id}, ${color}, ${game.clientID}");
 //    print("touchup ${id}");
   }
    
@@ -148,14 +147,12 @@ class Box implements Touchable{
                     rightBuddy.leftNeighbor = this;
                     this.rightNeighbor = rightBuddy;
                     print ('neighbors!');
-                    complete += 1;
                     ws.send("n:${id},right,${rightNeighbor.id}");
                  }
               if (leftBuddy.x + 10 >= this.x && leftBuddy.y + 10 >= this.y && leftBuddy.x + 10 <= this.x + 20 && leftBuddy.y + 10 <= this.y + 20){
                     leftBuddy.rightNeighbor = this;
                     this.leftNeighbor = leftBuddy;
                     print ('neighbors!');
-                    complete += 1;
                     ws.send("n:${id},left,${leftNeighbor.id}");
                  }
           }
@@ -164,7 +161,6 @@ class Box implements Touchable{
                 this.rightNeighbor = rightBuddy;
                 rightBuddy.leftNeighbor = this;
                 print ('neighbors!');
-                complete += 1;
                 ws.send("n:${id},right,${rightNeighbor.id}");
              }
           }
@@ -173,7 +169,6 @@ class Box implements Touchable{
                     this.leftNeighbor = leftBuddy;
                     leftBuddy.rightNeighbor = this;
                     print ('neighbors!');
-                    complete += 1;
                     ws.send("n:${id},left,${leftNeighbor.id}");
                  }
               }
@@ -308,11 +303,6 @@ class Game {
     ctx.textBaseline = 'center';
     ctx.fillText("Server/Client Attempt: Client# ${clientID}", 100, 50);
     ctx.fillText("Score: ${score}", 100, 100);
-    if (score == 120){
-          ctx.fillText("Complete!!", 100, 150);
-          ws.send("c:${clientID} completed puzzle");
-          box.complete = 0;
-        }
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
       ctx.fillRect(box.x, box.y, 50, 50);
