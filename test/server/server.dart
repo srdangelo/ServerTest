@@ -288,7 +288,7 @@ class State{
     }
     distributeMessage(msg);
     sendID();
-    logData('${time}, ${msg} \n', 'gameStateData.csv');
+    logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
     
   }
   
