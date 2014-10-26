@@ -44,6 +44,7 @@ class myClient {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.noDrag(num.parse(data[0]));
+      print (tempMsg);
       String temp = msg.substring(2);
       logData('Touch Up: ${temp} \n', 'clientData.csv');
     }
@@ -445,9 +446,10 @@ void main() {
   
   List<String> order = ['red', 'blue', 'green'];
   trial = new Trial(order);
+  trial.transition(order);
   
   
-  
+//  
 //  //setup state and some test objects
 //  myState = new State();
 //  Box box1 = new Box(1, random.nextInt(600), random.nextInt(400), 'red');
