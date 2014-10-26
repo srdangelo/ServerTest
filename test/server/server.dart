@@ -12,6 +12,7 @@ import 'dart:convert';
 * http://stackoverflow.com/questions/25982796/sending-mass-push-message-from-server-to-client-in-dart-lang-using-web-socket-m
 */
 class myClient {
+  DateTime time = new DateTime.now();
   num clientID = 1;
   WebSocket _socket;
 
@@ -30,7 +31,8 @@ class myClient {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
-      logData(tempMsg);
+      logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
+      print (tempMsg);
     }
     if (msg[0] == "n"){
       print(msg);
@@ -39,7 +41,11 @@ class myClient {
       myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
     }
     else if(msg[0] == "b"){
-      myState.noDrag(num.parse(msg.substring(2)));
+      String tempMsg = msg.substring(2);
+      List<String> data = tempMsg.split(",");
+      myState.noDrag(num.parse(data[0]));
+      String temp = msg.substring(2);
+      logData('Touch Up: ${temp} \n', 'clientData.csv');
     }
     
   }
@@ -88,8 +94,8 @@ void sendID (){
   }
 }
 
-void logData(String msg){
-  final filename = 'data.csv';
+void logData(String msg, String filename){
+  //final filename = 'data.csv';
   var file = new File(filename);
   var sink = file.openWrite(mode: FileMode.APPEND);
   sink.write(msg);
@@ -227,6 +233,8 @@ class Box{
 //This state will be mirrored by the State class on the client
 class State{
   
+  DateTime time = new DateTime.now();
+  
   //List of all objects in the scene that need to be communicated
   List<Box> myBoxes;
   
@@ -285,7 +293,7 @@ class State{
     }
     distributeMessage(msg);
     sendID();
-    //logData(msg);
+    logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
     
   }
   
@@ -332,9 +340,12 @@ class State{
         }
       }
     }
-    var sendScore = "s: ${score}";
+    var sendScore = "s: ${score} \n";
     distributeMessage(sendScore);
-    logData(sendScore);
+    logData(sendScore, 'clientData.csv');
+    if (score == 120){
+      trial.transition(['red', 'blue', 'green', 'yellow']);
+    }
   }
   
   
@@ -342,8 +353,9 @@ class State{
 }
 
 
-//initalize myState global var, dirty but quick example.
+//initalize myState global var.
 State myState;
+Trial trial;
 
 
 
@@ -353,6 +365,48 @@ State myState;
 //  virDir.serveFile(new File(indexUri.toFilePath()), request);
 //}
 
+class Trial{
+  var phase = 'TRIAL ONE';
+  num trialNum = 1;
+
+Trial (order) {
+ transition(order);
+}
+
+  void setup(order){
+    myState = new State();
+    num i = 1;
+    var piece;
+    for (piece in order){
+      //String boxNum = 'box' +  i.toString(); 
+      //setup state and some test objects   
+      Box box = new Box(i, random.nextInt(600), random.nextInt(400), piece);
+      myState.addBox(box);
+      i++;
+      }
+    }
+  
+  void transition(order) {
+     switch(phase){
+           case 'TRIAL ONE':
+              phase = 'TRIAL TWO';
+              trialNum += 1;
+              setup(order);
+              break;
+           case 'TRIAL TWO':
+              phase = 'TRIAL THREE';
+              trialNum += 1;
+              setup(order);
+              break;
+           case 'TRIAL THREE':
+              phase = 'TRIAL FOUR'; 
+              trialNum += 1;
+              setup(order);
+              break;
+           }
+       }
+  
+}
 
 
 void main() {
@@ -389,18 +443,23 @@ void main() {
   onError: (e) => print(e));
   
   
-  //setup state and some test objects
-  myState = new State();
-  Box box1 = new Box(1, random.nextInt(600), random.nextInt(400), 'red');
-  myState.addBox(box1);
-  Box box2 = new Box(2, random.nextInt(600), random.nextInt(400), 'green');
-  myState.addBox(box2);
-  Box box3 = new Box(3, random.nextInt(600), random.nextInt(400), 'blue');
-  myState.addBox(box3);
-  Box box4 = new Box(4, random.nextInt(600), random.nextInt(400), 'yellow');
-  myState.addBox(box4);
-  Box box5 = new Box(5, random.nextInt(600), random.nextInt(400), 'purple');
-  myState.addBox(box5);
+  List<String> order = ['red', 'blue', 'green'];
+  trial = new Trial(order);
+  
+  
+  
+//  //setup state and some test objects
+//  myState = new State();
+//  Box box1 = new Box(1, random.nextInt(600), random.nextInt(400), 'red');
+//  myState.addBox(box1);
+//  Box box2 = new Box(2, random.nextInt(600), random.nextInt(400), 'green');
+//  myState.addBox(box2);
+//  Box box3 = new Box(3, random.nextInt(600), random.nextInt(400), 'blue');
+//  myState.addBox(box3);
+//  Box box4 = new Box(4, random.nextInt(600), random.nextInt(400), 'yellow');
+//  myState.addBox(box4);
+//  Box box5 = new Box(5, random.nextInt(600), random.nextInt(400), 'purple');
+//  myState.addBox(box5);
   
   
   //setup times to update the state and send out messages to clients out with state information

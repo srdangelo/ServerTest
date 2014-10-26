@@ -7302,7 +7302,7 @@ var $$ = {};
     touchUp$1: function($event) {
       this.dragged = false;
       this.dragTimer.cancel$0();
-      $.ws.send("b:" + H.S(this.id));
+      $.ws.send("b:" + H.S(this.id) + ", " + H.S(this.color) + ", " + H.S($.game.clientID));
       P.print("touchup " + H.S(this.id));
     },
     myTouchUp$1: function($event) {
@@ -7349,14 +7349,14 @@ var $$ = {};
           P.print("neighbors!");
           $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
         }
-      $.ws.send("b:" + H.S(this.id));
+      $.ws.send("b:" + H.S(this.id) + ", " + H.S(this.color) + ", " + H.S($.game.clientID));
     },
     touchDrag$1: function(e) {
       var t1, t2;
       if (this.dragged) {
         t1 = e.touchX;
         t2 = e.touchY;
-        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", Client#" + H.S($.game.clientID));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + "," + H.S(this.leftNeighbor.color) + "," + H.S(this.rightNeighbor.color) + ", Client#" + H.S($.game.clientID));
         P.print(e.touchX);
       }
     },
@@ -7427,7 +7427,7 @@ var $$ = {};
     }
   },
   Game: {
-    "^": "Object;canvas,ctx,width,height,myState,tmanager,tlayer,score,clientID",
+    "^": "Object;canvas,ctx,width,height,myState,box,tmanager,tlayer,score,clientID",
     animate$0: function(_) {
       var t1 = $.ws;
       t1.toString;
@@ -7500,7 +7500,7 @@ var $$ = {};
         t2 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
         t3 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
         t3.enabled = true;
-        t3 = new X.Game(null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null);
+        t3 = new X.Game(null, null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null);
         t3.Game$0();
         return t3;
       }}
@@ -13763,12 +13763,13 @@ function dart_precompiled($collectedClasses) {
   if ($desc instanceof Array)
     $desc = $desc[1];
   State.prototype = $desc;
-  function Game(canvas, ctx, width, height, myState, tmanager, tlayer, score, clientID) {
+  function Game(canvas, ctx, width, height, myState, box, tmanager, tlayer, score, clientID) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.width = width;
     this.height = height;
     this.myState = myState;
+    this.box = box;
     this.tmanager = tmanager;
     this.tlayer = tlayer;
     this.score = score;
