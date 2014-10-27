@@ -87,7 +87,8 @@ class Box implements Touchable{
   
   //when this object is dragged, send a 'd' message with id, x, y, color
   sendDrag(num newX, num newY){
-    ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
+    ws.send("d:${id},${newX},${newY},${color}");
+    //ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
   }
   
 
@@ -102,6 +103,13 @@ class Box implements Touchable{
   }
    
   bool touchDown(Contact e) {
+    dragged = true;
+//    dragTimer = new Timer.periodic(const Duration(milliseconds : 80), (timer) => sendDrag(e.touchX, e.touchY));
+//    print(e.touchX);
+    return true;
+  }
+  
+  bool myTouchDown(MouseEvent event) {
     dragged = true;
 //    dragTimer = new Timer.periodic(const Duration(milliseconds : 80), (timer) => sendDrag(e.touchX, e.touchY));
 //    print(e.touchX);

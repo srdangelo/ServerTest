@@ -7356,7 +7356,7 @@ var $$ = {};
       if (this.dragged) {
         t1 = e.touchX;
         t2 = e.touchY;
-        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + "," + H.S(this.leftNeighbor.color) + "," + H.S(this.rightNeighbor.color) + ", Client#" + H.S($.game.clientID));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color));
         P.print(e.touchX);
       }
     },
