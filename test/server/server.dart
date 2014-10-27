@@ -28,25 +28,31 @@ class myClient {
   void messageHandler(String msg){
 //      print(msg);
     if(msg[0] == "d"){
+      //print (msg);
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
-      //logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
-      print (tempMsg);
+      logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
+      //print (tempMsg);
     }
     if (msg[0] == "n"){
-      print(msg);
+      //print(msg);
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
     }
+    if (msg[0] == "c"){
+          print(msg);
+          String tempMsg = msg.substring(2);
+          List<String> data = tempMsg.split(",");
+          print (data);
+          logData('Touch Down: ${data} \n', 'clientData.csv');
+        }
     else if(msg[0] == "b"){
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
-      print (data);
+      //print (data);
       myState.noDrag(num.parse(data[0]));
-      String temp = msg.substring(2);
-      logData('Touch Up: ${temp} \n', 'clientData.csv');
     }
     
   }
@@ -90,7 +96,7 @@ void distributeMessage(String msg){
 void sendID (){
   num ID = 1;
   for (myClient e in clients){
-     e.write("i: ${ID}");
+     e.write("i: ${ID}, ${trial.trialNum}");
     ID ++; 
   }
 }
@@ -343,9 +349,10 @@ class State{
     }
     var sendScore = "s: ${score} \n";
     distributeMessage(sendScore);
+    print (myBoxes.length);
     logData(sendScore, 'clientData.csv');
-    if (score == 120){
-      trial.transition(['red', 'blue', 'green', 'yellow']);
+    if (score == 90 + (10 * myBoxes.length)){
+      trial.transition();
     }
   }
   
@@ -367,11 +374,11 @@ Trial trial;
 //}
 
 class Trial{
-  var phase = 'TRIAL ONE';
-  num trialNum = 1;
+  var phase = 'TRIAL ZERO';
+  num trialNum = 0;
 
-Trial (order) {
- transition(order);
+Trial () {
+ transition();
 }
 
   void setup(order){
@@ -387,22 +394,28 @@ Trial (order) {
       }
     }
   
-  void transition(order) {
+  void transition() {
+     List<String> order = [['red', 'blue', 'green'], ['red', 'blue', 'green', 'yellow'], ['red', 'blue', 'green', 'purple'], ['red', 'blue', 'green', 'purple', 'pink']];
      switch(phase){
+          case 'TRIAL ZERO':
+              phase = 'TRIAL ONE';
+              trialNum += 1;
+              setup(order[0]);
+              break;
            case 'TRIAL ONE':
               phase = 'TRIAL TWO';
               trialNum += 1;
-              setup(order);
+              setup(order[1]);
               break;
            case 'TRIAL TWO':
               phase = 'TRIAL THREE';
               trialNum += 1;
-              setup(order);
+              setup(order[2]);
               break;
            case 'TRIAL THREE':
               phase = 'TRIAL FOUR'; 
               trialNum += 1;
-              setup(order);
+              setup(order[3]);
               break;
            }
        }
@@ -444,8 +457,8 @@ void main() {
   onError: (e) => print(e));
   
   
-  List<String> order = ['red', 'blue', 'green'];
-  trial = new Trial(order);
+  
+  trial = new Trial();
   
   
   

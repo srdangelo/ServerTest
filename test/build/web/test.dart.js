@@ -7356,7 +7356,7 @@ var $$ = {};
       if (this.dragged) {
         t1 = e.touchX;
         t2 = e.touchY;
-        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", Client#" + H.S($.game.clientID));
         P.print(e.touchX);
       }
     },
@@ -7427,7 +7427,7 @@ var $$ = {};
     }
   },
   Game: {
-    "^": "Object;canvas,ctx,width,height,myState,box,tmanager,tlayer,score,clientID",
+    "^": "Object;canvas,ctx,width,height,myState,box,tmanager,tlayer,score,clientID,trialNum",
     animate$0: function(_) {
       var t1 = $.ws;
       t1.toString;
@@ -7442,7 +7442,7 @@ var $$ = {};
       J.set$font$x(this.ctx, "30px sans-serif");
       J.set$textAlign$x(this.ctx, "left");
       J.set$textBaseline$x(this.ctx, "center");
-      J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID), 100, 50);
+      J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
       J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
       for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
         box = t1._current;
@@ -7452,7 +7452,7 @@ var $$ = {};
       }
     },
     handleMsg$1: function(data) {
-      var t1, objectsData, t2, data0, t3, t4, t5, t6;
+      var t1, objectsData, t2, data0, t3, t4, t5, t6, temp;
       t1 = J.getInterceptor$asx(data);
       if (J.$eq(t1.$index(data, 0), "u")) {
         objectsData = t1.substring$1(data, 2).split(";");
@@ -7475,8 +7475,16 @@ var $$ = {};
       }
       if (J.$eq(t1.$index(data, 0), "s"))
         this.score = t1.substring$1(data, 2);
-      if (J.$eq(t1.$index(data, 0), "i"))
-        this.clientID = t1.substring$1(data, 2);
+      if (J.$eq(t1.$index(data, 0), "i")) {
+        temp = t1.substring$1(data, 2).split(",");
+        t1 = temp.length;
+        if (0 >= t1)
+          return H.ioore(temp, 0);
+        this.clientID = temp[0];
+        if (1 >= t1)
+          return H.ioore(temp, 1);
+        this.trialNum = temp[1];
+      }
     },
     Game$0: function() {
       var t1, t2;
@@ -7500,7 +7508,7 @@ var $$ = {};
         t2 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
         t3 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
         t3.enabled = true;
-        t3 = new X.Game(null, null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null);
+        t3 = new X.Game(null, null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null, null);
         t3.Game$0();
         return t3;
       }}

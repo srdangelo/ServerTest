@@ -87,7 +87,7 @@ class Box implements Touchable{
   
   //when this object is dragged, send a 'd' message with id, x, y, color
   sendDrag(num newX, num newY){
-    ws.send("d:${id},${newX},${newY},${color}");
+    ws.send("d:${id},${newX},${newY},${color}, Client#${game.clientID}");
     //ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
   }
   
@@ -111,6 +111,7 @@ class Box implements Touchable{
   
   bool myTouchDown(MouseEvent event) {
     dragged = true;
+    ws.send("c:${id}, ${color}, ${game.clientID}");
 //    dragTimer = new Timer.periodic(const Duration(milliseconds : 80), (timer) => sendDrag(e.touchX, e.touchY));
 //    print(e.touchX);
     return true;
@@ -269,6 +270,7 @@ class Game {
   
   var score;
   var clientID;
+  var trialNum;
   
   Game() {
     canvas = querySelector("#game");
@@ -309,7 +311,7 @@ class Game {
     ctx.font = '30px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'center';
-    ctx.fillText("Server/Client Attempt: Client# ${clientID}", 100, 50);
+    ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
     ctx.fillText("Score: ${score}", 100, 100);
     for(Box box in myState.myBoxes){
       ctx.fillStyle = box.color;
@@ -336,7 +338,10 @@ class Game {
       score = data.substring(2);
     }
     if (data[0] == "i"){
-      clientID = data.substring(2);
+      String tempMsg = data.substring(2);
+      List<String> temp = tempMsg.split(",");
+      clientID = temp[0];
+      trialNum = temp[1];
     }
   }
 }
