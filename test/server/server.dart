@@ -398,6 +398,13 @@ Trial () {
      List<String> order = [['red', 'blue', 'green'], ['red', 'blue', 'green', 'black'], ['red', 'blue', 'green', 'purple'], ['red', 'blue', 'green', 'purple', 'black']];
      switch(phase){
           case 'TRIAL ZERO':
+              phase = 'BREAK';
+              setup([]);
+              new Timer(const Duration(seconds : 10), () {
+                 transition();
+              });
+              break;
+          case 'BREAK':
               phase = 'TRIAL ONE';
               trialNum += 1;
               setup(order[0]);
