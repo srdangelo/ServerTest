@@ -395,7 +395,7 @@ Trial () {
     }
   
   void transition() {
-     List<String> order = [['red', 'blue', 'green'], ['red', 'blue', 'green', 'yellow'], ['red', 'blue', 'green', 'purple'], ['red', 'blue', 'green', 'purple', 'pink']];
+     List<String> order = [['red', 'blue', 'green'], ['red', 'blue', 'green', 'black'], ['red', 'blue', 'green', 'purple'], ['red', 'blue', 'green', 'purple', 'black']];
      switch(phase){
           case 'TRIAL ZERO':
               phase = 'TRIAL ONE';

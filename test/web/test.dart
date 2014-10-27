@@ -72,6 +72,8 @@ class Box implements Touchable{
   num id;
   bool dragged;
   
+  ImageElement img = new ImageElement();
+  
   Box rightBuddy = null;
   Box leftBuddy = null;
   
@@ -83,6 +85,7 @@ class Box implements Touchable{
   Box(this.id, this.x, this.y, this.color){
     document.onMouseUp.listen((e) => myTouchUp(e));
     dragged= false;
+    img.src = "images/${this.color}.png";
   }
   
   //when this object is dragged, send a 'd' message with id, x, y, color
@@ -182,6 +185,16 @@ class Box implements Touchable{
                  }
               }
       }
+  void draw(CanvasRenderingContext2D ctx){
+    ctx.save();
+    {
+    num boxWidth = img.width;    
+    num boxHeight = img.height;
+    ctx.translate(x, y);
+    ctx.drawImage(img, -boxWidth/2, -boxHeight/2);
+    }
+    ctx.restore();
+  }
   
 }
 
@@ -253,6 +266,8 @@ class Game {
   // this is the HTML canvas element
   CanvasElement canvas;
   
+  ImageElement img = new ImageElement();
+  
   // this object is what you use to draw on the canvas
   CanvasRenderingContext2D ctx;
 
@@ -314,8 +329,9 @@ class Game {
     ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
     ctx.fillText("Score: ${score}", 100, 100);
     for(Box box in myState.myBoxes){
-      ctx.fillStyle = box.color;
-      ctx.fillRect(box.x, box.y, 50, 50);
+      box.draw(ctx);
+      //ctx.fillStyle = box.color;
+      //ctx.fillRect(box.x, box.y, 50, 50);
       
     }
   }

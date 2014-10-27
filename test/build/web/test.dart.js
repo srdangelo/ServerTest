@@ -6229,6 +6229,10 @@ var $$ = {};
 }],
 ["dart.dom.html", "dart:html", , W, {
   "^": "",
+  ImageElement_ImageElement: function(height, src, width) {
+    var e = document.createElement("img", null);
+    return e;
+  },
   WebSocket_WebSocket: function(url, protocol_OR_protocols) {
     return new WebSocket(url);
   },
@@ -6257,7 +6261,7 @@ var $$ = {};
   },
   HtmlElement: {
     "^": "Element;",
-    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
+    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLShadowElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
   },
   AnchorElement: {
     "^": "HtmlElement;",
@@ -6297,8 +6301,8 @@ var $$ = {};
     clearRect$4: function(receiver, x, y, width, height) {
       return receiver.clearRect(x, y, width, height);
     },
-    fillRect$4: function(receiver, x, y, width, height) {
-      return receiver.fillRect(x, y, width, height);
+    save$0: function(receiver) {
+      return receiver.save();
     },
     fillText$4: function(receiver, text, x, y, maxWidth) {
       receiver.fillText(text, x, y);
@@ -6352,7 +6356,7 @@ var $$ = {};
     "%": ";Element"
   },
   EmbedElement: {
-    "^": "HtmlElement;height=,width=",
+    "^": "HtmlElement;height=,src},width=",
     "%": "HTMLEmbedElement"
   },
   ErrorEvent: {
@@ -6381,26 +6385,22 @@ var $$ = {};
     "^": "HtmlElement;length=",
     "%": "HTMLFormElement"
   },
-  HRElement: {
-    "^": "HtmlElement;color=",
-    "%": "HTMLHRElement"
-  },
   IFrameElement: {
-    "^": "HtmlElement;height=,width=",
+    "^": "HtmlElement;height=,src},width=",
     "%": "HTMLIFrameElement"
   },
   ImageElement: {
-    "^": "HtmlElement;height=,width=",
+    "^": "HtmlElement;height=,src},width=",
     "%": "HTMLImageElement"
   },
   InputElement: {
-    "^": "HtmlElement;height=,width=",
+    "^": "HtmlElement;height=,src},width=",
     $isElement: true,
     $isEventTarget: true,
     "%": "HTMLInputElement"
   },
   MediaElement: {
-    "^": "HtmlElement;error=",
+    "^": "HtmlElement;error=,src}",
     "%": "HTMLAudioElement;HTMLMediaElement"
   },
   MediaStream: {
@@ -6460,9 +6460,17 @@ var $$ = {};
     "^": "HtmlElement;data=,height=,width=",
     "%": "HTMLObjectElement"
   },
+  ScriptElement: {
+    "^": "HtmlElement;src}",
+    "%": "HTMLScriptElement"
+  },
   SelectElement: {
     "^": "HtmlElement;length=",
     "%": "HTMLSelectElement"
+  },
+  SourceElement: {
+    "^": "HtmlElement;src}",
+    "%": "HTMLSourceElement"
   },
   SpeechRecognitionError: {
     "^": "Event;error=",
@@ -6475,6 +6483,10 @@ var $$ = {};
   TouchEvent: {
     "^": "UIEvent;",
     "%": "TouchEvent"
+  },
+  TrackElement: {
+    "^": "HtmlElement;src}",
+    "%": "HTMLTrackElement"
   },
   UIEvent: {
     "^": "Event;",
@@ -7280,7 +7292,7 @@ var $$ = {};
     }
   },
   Box: {
-    "^": "Object;x*,y,color>,id>,dragged,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
+    "^": "Object;x',y,color,id>,dragged,img,rightBuddy,leftBuddy,leftNeighbor,rightNeighbor,dragTimer",
     containsTouch$1: function(e) {
       var t1, t2;
       t1 = e.touchX;
@@ -7360,13 +7372,29 @@ var $$ = {};
         P.print(e.touchX);
       }
     },
+    draw$1: function(ctx) {
+      var t1, t2, boxWidth, boxHeight;
+      J.save$0$x(ctx);
+      t1 = this.img;
+      t2 = J.getInterceptor$x(t1);
+      boxWidth = t2.get$width(t1);
+      boxHeight = t2.get$height(t1);
+      ctx.translate(this.x, this.y);
+      if (typeof boxWidth !== "number")
+        return boxWidth.$negate();
+      if (typeof boxHeight !== "number")
+        return boxHeight.$negate();
+      ctx.drawImage(t1, -boxWidth / 2, -boxHeight / 2);
+      ctx.restore();
+    },
     Box$4: function(id, x, y, color) {
       var t1 = H.setRuntimeTypeInfo(new W._EventStream(document, C.EventStreamProvider_mouseup._eventType, false), [null]);
       H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.Box_closure(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       this.dragged = false;
+      J.set$src$x(this.img, "images/" + H.S(this.color) + ".png");
     },
     static: {Box$: function(id, x, y, color) {
-        var t1 = new X.Box(x, y, color, id, null, null, null, null, null, null);
+        var t1 = new X.Box(x, y, color, id, null, W.ImageElement_ImageElement(null, null, null), null, null, null, null, null);
         t1.Box$4(id, x, y, color);
         return t1;
       }}
@@ -7427,7 +7455,7 @@ var $$ = {};
     }
   },
   Game: {
-    "^": "Object;canvas,ctx,width,height,myState,box,tmanager,tlayer,score,clientID,trialNum",
+    "^": "Object;canvas,img,ctx,width,height,myState,box,tmanager,tlayer,score,clientID,trialNum",
     animate$0: function(_) {
       var t1 = $.ws;
       t1.toString;
@@ -7436,7 +7464,6 @@ var $$ = {};
       this.draw$0();
     },
     draw$0: function() {
-      var t1, box, t2;
       J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
       J.set$fillStyle$x(this.ctx, "white");
       J.set$font$x(this.ctx, "30px sans-serif");
@@ -7444,12 +7471,8 @@ var $$ = {};
       J.set$textBaseline$x(this.ctx, "center");
       J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
       J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
-      for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
-        box = t1._current;
-        t2 = J.getInterceptor$x(box);
-        J.set$fillStyle$x(this.ctx, t2.get$color(box));
-        J.fillRect$4$x(this.ctx, t2.get$x(box), box.y, 50, 50);
-      }
+      for (var t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
+        t1._current.draw$1(this.ctx);
     },
     handleMsg$1: function(data) {
       var t1, objectsData, t2, data0, t3, t4, t5, t6, temp;
@@ -7503,14 +7526,15 @@ var $$ = {};
       P.Timer_Timer$periodic(C.Duration_80000, new X.Game_closure(this));
     },
     static: {Game$: function() {
-        var t1, t2, t3;
-        t1 = H.setRuntimeTypeInfo([], [X.TouchLayer]);
-        t2 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
-        t3 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
-        t3.enabled = true;
-        t3 = new X.Game(null, null, null, null, null, null, new X.TouchManager(false, null, t1, t2), t3, null, null, null);
-        t3.Game$0();
-        return t3;
+        var t1, t2, t3, t4;
+        t1 = W.ImageElement_ImageElement(null, null, null);
+        t2 = H.setRuntimeTypeInfo([], [X.TouchLayer]);
+        t3 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
+        t4 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
+        t4.enabled = true;
+        t4 = new X.Game(null, t1, null, null, null, null, null, new X.TouchManager(false, null, t2, t3), t4, null, null, null);
+        t4.Game$0();
+        return t4;
       }}
   },
   Game_closure: {
@@ -7919,9 +7943,6 @@ J.contains$1$asx = function(receiver, a0) {
 J.endsWith$1$s = function(receiver, a0) {
   return J.getInterceptor$s(receiver).endsWith$1(receiver, a0);
 };
-J.fillRect$4$x = function(receiver, a0, a1, a2, a3) {
-  return J.getInterceptor$x(receiver).fillRect$4(receiver, a0, a1, a2, a3);
-};
 J.fillText$3$x = function(receiver, a0, a1, a2) {
   return J.getInterceptor$x(receiver).fillText$3(receiver, a0, a1, a2);
 };
@@ -7970,6 +7991,9 @@ J.remove$1$ax = function(receiver, a0) {
 J.removeEventListener$3$x = function(receiver, a0, a1, a2) {
   return J.getInterceptor$x(receiver).removeEventListener$3(receiver, a0, a1, a2);
 };
+J.save$0$x = function(receiver) {
+  return J.getInterceptor$x(receiver).save$0(receiver);
+};
 J.send$1$x = function(receiver, a0) {
   return J.getInterceptor$x(receiver).send$1(receiver, a0);
 };
@@ -7978,6 +8002,9 @@ J.set$fillStyle$x = function(receiver, value) {
 };
 J.set$font$x = function(receiver, value) {
   return J.getInterceptor$x(receiver).set$font(receiver, value);
+};
+J.set$src$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$src(receiver, value);
 };
 J.set$textAlign$x = function(receiver, value) {
   return J.getInterceptor$x(receiver).set$textAlign(receiver, value);
