@@ -42,7 +42,7 @@ class myClient {
       myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
     }
     if (msg[0] == "c"){
-          print(msg);
+          //print(msg);
           String tempMsg = msg.substring(2);
           List<String> data = tempMsg.split(",");
           print (data);
